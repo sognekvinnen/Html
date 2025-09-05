@@ -1,0 +1,19 @@
+<html>
+<head>
+    <h3 style="color: darkred">The Website</h3>
+</head>
+<body style="background-color: antiquewhite">
+    <table border="1">
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+        </tr>
+    </table>
+</body>
+</html>

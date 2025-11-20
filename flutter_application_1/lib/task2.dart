@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(width: 50, height: 50, color: Colors.amber),
             ],
           ),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [Text('Big Mac')],
           ),

@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   supabase_flutter: ^2.1.2
+  flutter_map: 
 
 dev_dependencies:
   flutter_test:

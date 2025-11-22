@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/map.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+void main() async  {
+    WidgetsFlutterBinding.ensureInitialized();
+  
+  await Supabase.initialize(
+    url: 'https://frvexfoezbscdbcvuxas.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZydmV4Zm9lemJzY2RiY3Z1eGFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NDY4ODgsImV4cCI6MjA3NTMyMjg4OH0.XDr9MFxBMX0P42a4MwjstxtZeh_Caqdyrfpfr7d9ec8',
+  );
+
   runApp(const MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -27,6 +37,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+
+  var menuIndex=0;
   final _formKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -39,7 +51,7 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       // Обработка данных формы
       final login = _loginController.text;
@@ -49,18 +61,64 @@ class _LoginFormState extends State<LoginForm> {
       print('Логин: $login');
       print('Пароль: $password');
       
+      if(menuIndex==0) {
+
+     var authResponse =await Supabase.instance.client.auth.signInWithPassword(
+      email: login,
+      password: password);
+     print(authResponse);
+      print(authResponse.user);
+      if(authResponse.user !=null) {
+
+          ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Форма отправлена успешно!')),
+                );
+
+          Navigator.of(context).push( 
+            MaterialPageRoute(builder: (c) {
+
+                  return    MyMapWidget();
+
+
+            })
+          );
+      }
+      else {
+         ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Error!')),
+                );
+      }
+      // Показать сообщение об успехе
+     
+      }
+      else if(menuIndex==1) {
+        
+     var authResponse =await Supabase.instance.client.auth.signUp(
+      email: login,
+      password: password);
+     print(authResponse.user);
       // Показать сообщение об успехе
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Форма отправлена успешно!')),
       );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (i) { setState(() { menuIndex=i; }); },
+        currentIndex:menuIndex,
+        items: [ 
+      BottomNavigationBarItem(icon: Icon(Icons.add_card),label:'signin'),
+         BottomNavigationBarItem(icon: Icon(Icons.add_card),label: 'signup'),
+            BottomNavigationBarItem(icon: Icon(Icons.add_card),label:'map')
+      ]),
+      
       appBar: AppBar(
-        title: const Text('Форма входа'),
+        title:  Text(menuIndex==1 ? 'Форма входа' : 'Регистрация'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
